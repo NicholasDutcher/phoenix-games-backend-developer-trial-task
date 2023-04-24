@@ -1,6 +1,7 @@
 package com.spotlight.platform.userprofile.api.model.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Objects;
 import com.spotlight.platform.userprofile.api.core.json.JsonMapper;
 
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ class WrappedStringTest {
         SomeId idA = new SomeId("a");
         AnotherId idB = new AnotherId("a");
 
-        assertThat(idA.equals(idB)).isFalse();
+        assertThat(Objects.equal(idA, idB)).isFalse();
     }
 
     @Test

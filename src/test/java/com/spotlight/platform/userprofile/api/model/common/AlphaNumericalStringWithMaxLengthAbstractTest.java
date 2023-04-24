@@ -9,10 +9,19 @@ import io.dropwizard.jersey.validation.Validators;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Locale;
+
 public abstract class AlphaNumericalStringWithMaxLengthAbstractTest<T> {
-    private final Validator validator = Validators.newValidator();
+
+    private final Validator validator = initValidator();
 
     protected abstract T getInstance(String value);
+
+    private static Validator initValidator() {
+        final var config = Validators.newConfiguration();
+        config.defaultLocale(Locale.ENGLISH);
+        return config.buildValidatorFactory().getValidator();
+    }
 
     @Test
     void validation_correctValueIsValid() {
@@ -25,14 +34,16 @@ public abstract class AlphaNumericalStringWithMaxLengthAbstractTest<T> {
     void validation_emptyIsNotValid() {
         var violations = validator.validate(getInstance(""));
 
-        assertThat(violations).extracting(ConstraintViolation::getMessage).containsExactly("length must be between 1 and 1024");
+        assertThat(violations).extracting(ConstraintViolation::getMessage)
+                .containsExactly("length must be between 1 and 1024");
     }
 
     @Test
     void validation_longStringIsNotValid() {
         var violations = validator.validate(getInstance("a".repeat(2000)));
 
-        assertThat(violations).extracting(ConstraintViolation::getMessage).containsExactly("length must be between 1 and 1024");
+        assertThat(violations).extracting(ConstraintViolation::getMessage)
+                .containsExactly("length must be between 1 and 1024");
     }
 
     @Test
