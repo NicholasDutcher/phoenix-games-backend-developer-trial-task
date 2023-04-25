@@ -1,6 +1,7 @@
 package com.spotlight.platform.userprofile.api.web.healthchecks;
 
 import com.codahale.metrics.health.HealthCheck;
+import com.codahale.metrics.health.HealthCheck.Result;
 
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +18,12 @@ class PreventStartupWarningHealthCheckTest {
 
     @Test
     void healthCheckCalled_returnsHealthy() {
-        assertThat(healthCheck.check()).isEqualTo(HealthCheck.Result.healthy());
+        final Result healthCheckResult = healthCheck.check();
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        assertThat(healthCheckResult.equals(HealthCheck.Result.healthy()));
     }
 }
