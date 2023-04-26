@@ -51,7 +51,7 @@ check {
 jacocoTestReport {
    reports {
        xml.required = true
-       xml.destination = file("target/site/jacoco/jacoco.xml")
+       xml.outputLocation = file("build/jacoco/jacoco.xml")
    }
 }
 
