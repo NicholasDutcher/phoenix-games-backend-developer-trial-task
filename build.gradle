@@ -48,6 +48,13 @@ check {
     finalizedBy jacocoTestCoverageVerification
 }
 
+jacocoTestReport {
+   reports {
+       xml.required = true
+       xml.destination = file("target/site/jacoco/jacoco.xml")
+   }
+}
+
 jacocoTestCoverageVerification {
     violationRules {
         failOnViolation = true
