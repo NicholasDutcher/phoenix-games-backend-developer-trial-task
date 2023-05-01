@@ -2,6 +2,7 @@ package com.spotlight.platform.userprofile.api.web;
 
 import com.spotlight.platform.userprofile.api.core.json.JsonMapper;
 import com.spotlight.platform.userprofile.api.model.configuration.UserProfileApiConfiguration;
+import com.spotlight.platform.userprofile.api.web.exceptionmappers.ApiExceptionMapper;
 import com.spotlight.platform.userprofile.api.web.exceptionmappers.EntityNotFoundExceptionMapper;
 import com.spotlight.platform.userprofile.api.web.healthchecks.PreventStartupWarningHealthCheck;
 import com.spotlight.platform.userprofile.api.web.modules.UserProfileApiModule;
@@ -21,7 +22,7 @@ public class UserProfileApiApplication extends Application<UserProfileApiConfigu
     }
 
     @Override
-    public void initialize(Bootstrap<UserProfileApiConfiguration> bootstrap) {
+    public void initialize(final Bootstrap<UserProfileApiConfiguration> bootstrap) {
         super.initialize(bootstrap);
         guiceBundle = GuiceBundle.builder()
                 .enableAutoConfig(getClass().getPackage().getName())
@@ -33,24 +34,26 @@ public class UserProfileApiApplication extends Application<UserProfileApiConfigu
     }
 
     @Override
-    public void run(UserProfileApiConfiguration configuration, Environment environment) {
+    public void run(final UserProfileApiConfiguration configuration, final Environment environment) {
         registerHealthChecks(environment);
         registerExceptionMappers(environment);
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         new UserProfileApiApplication().run(args);
     }
 
-    private void registerHealthChecks(Environment environment) {
-        environment.healthChecks().register(PreventStartupWarningHealthCheck.NAME, getInstance(PreventStartupWarningHealthCheck.class));
+    private void registerHealthChecks(final Environment environment) {
+        environment.healthChecks().register(PreventStartupWarningHealthCheck.NAME,
+                getInstance(PreventStartupWarningHealthCheck.class));
     }
 
-    private void registerExceptionMappers(Environment environment) {
+    private void registerExceptionMappers(final Environment environment) {
         environment.jersey().register(getInstance(EntityNotFoundExceptionMapper.class));
+        environment.jersey().register(getInstance(ApiExceptionMapper.class));
     }
 
-    private <T> T getInstance(Class<T> clazz) {
+    private <T> T getInstance(final Class<T> clazz) {
         return guiceBundle.getInjector().getInstance(clazz);
     }
 }
