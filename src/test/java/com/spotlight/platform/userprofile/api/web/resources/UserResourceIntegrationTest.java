@@ -29,6 +29,7 @@ import com.spotlight.platform.userprofile.api.model.profile.UserProfile;
 import com.spotlight.platform.userprofile.api.model.profile.primitives.UserId;
 import com.spotlight.platform.userprofile.api.model.profile.primitives.UserProfileFixtures;
 import com.spotlight.platform.userprofile.api.model.profile.primitives.UserProfileFixturesCommandTypeCollect;
+import com.spotlight.platform.userprofile.api.model.profile.primitives.UserProfileFixturesCommandTypeIncrement;
 import com.spotlight.platform.userprofile.api.model.profile.primitives.UserProfileFixturesCommandTypeReplace;
 import com.spotlight.platform.userprofile.api.web.UserProfileApiApplication;
 
@@ -117,13 +118,13 @@ class UserResourceIntegrationTest {
 
         @Test
       void test_ingrement(final ClientSupport client, final UserProfileDao userProfileDao) {
-      when(userProfileDao.get(any(UserId.class))).thenReturn(Optional.of(UserProfileFixturesCommandTypeReplace.INITIAL_USER_PROFILE_REPLACE));
+      when(userProfileDao.get(any(UserId.class))).thenReturn(Optional.of(UserProfileFixturesCommandTypeIncrement.INITIAL_USER_PROFILE_INCREMENT));
       final var response =
       client.targetRest(URL).request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-      .post(Entity.entity(UserProfileFixturesCommandTypeReplace.SERIALIZED_USER_PROFILE_REPLACE,MediaType.APPLICATION_JSON));
+      .post(Entity.entity(UserProfileFixturesCommandTypeIncrement.SERIALIZED_USER_PROFILE_INCREMENT,MediaType.APPLICATION_JSON));
       assertThat(response.getStatus()).isEqualTo(HttpStatus.OK_200);
       assertThatJson(response.readEntity(UserProfile.class)).whenIgnoringPaths("latestUpdateTime")
-      .isEqualTo(UserProfileFixturesCommandTypeReplace.SERIALIZED_USER_PROFILE_REPLACE_RESPONSE);
+      .isEqualTo(UserProfileFixturesCommandTypeIncrement.SERIALIZED_USER_PROFILE_INCREMENT_RESPONSE);
       }
 
         @Test
