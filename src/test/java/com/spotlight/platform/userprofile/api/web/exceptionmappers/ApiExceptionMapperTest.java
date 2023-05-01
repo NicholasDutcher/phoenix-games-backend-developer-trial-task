@@ -1,0 +1,56 @@
+package com.spotlight.platform.userprofile.api.web.exceptionmappers;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Response;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import com.spotlight.platform.userprofile.api.core.exceptions.ApiException;
+
+import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
+import io.dropwizard.testing.junit5.ResourceExtension;
+
+@ExtendWith(DropwizardExtensionsSupport.class)
+class ApiExceptionMapperTest {
+
+    private static final ResourceExtension EXT = ResourceExtension.builder()
+            .addResource(new MockResource())
+            .setRegisterDefaultExceptionMappers(false)
+            .addProvider(new ApiExceptionMapper())
+            .build();
+
+    private Client client;
+
+    @BeforeEach
+    void setUp() {
+        client = EXT.client();
+    }
+
+    @Test
+    void badRequest_ResultsIn400() {
+        final Response response = client.target(MockResource.RESOURCE_URLS.THROW_EXCEPTION).request()
+                .post(Entity.json("{}"));
+
+        assertThat(response.getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
+    }
+
+    @Path("/")
+    public static class MockResource {
+        public static class RESOURCE_URLS {
+            public static final String THROW_EXCEPTION = "/throwApiException";
+        }
+
+        @POST
+        @Path(RESOURCE_URLS.THROW_EXCEPTION)
+        public void throwException() {
+            throw new ApiException("", Response.Status.BAD_REQUEST);
+        }
+    }
+}
