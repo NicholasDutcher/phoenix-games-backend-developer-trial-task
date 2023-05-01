@@ -28,6 +28,7 @@ import com.spotlight.platform.userprofile.api.core.profile.persistence.UserProfi
 import com.spotlight.platform.userprofile.api.model.profile.UserProfile;
 import com.spotlight.platform.userprofile.api.model.profile.primitives.UserId;
 import com.spotlight.platform.userprofile.api.model.profile.primitives.UserProfileFixtures;
+import com.spotlight.platform.userprofile.api.model.profile.primitives.UserProfileFixturesBatch;
 import com.spotlight.platform.userprofile.api.model.profile.primitives.UserProfileFixturesCommandTypeCollect;
 import com.spotlight.platform.userprofile.api.model.profile.primitives.UserProfileFixturesCommandTypeIncrement;
 import com.spotlight.platform.userprofile.api.model.profile.primitives.UserProfileFixturesCommandTypeReplace;
@@ -116,7 +117,7 @@ class UserResourceIntegrationTest {
       .isEqualTo(UserProfileFixturesCommandTypeReplace.SERIALIZED_USER_PROFILE_REPLACE_RESPONSE);
       }
 
-        @Test
+      @Test
       void test_ingrement(final ClientSupport client, final UserProfileDao userProfileDao) {
       when(userProfileDao.get(any(UserId.class))).thenReturn(Optional.of(UserProfileFixturesCommandTypeIncrement.INITIAL_USER_PROFILE_INCREMENT));
       final var response =
@@ -127,7 +128,7 @@ class UserResourceIntegrationTest {
       .isEqualTo(UserProfileFixturesCommandTypeIncrement.SERIALIZED_USER_PROFILE_INCREMENT_RESPONSE);
       }
 
-        @Test
+      @Test
       void test_collect(final ClientSupport client, final UserProfileDao userProfileDao) {
       when(userProfileDao.get(any(UserId.class))).thenReturn(Optional.of(UserProfileFixturesCommandTypeCollect.INITIAL_USER_PROFILE_COLLECT));
       final var response =
@@ -138,6 +139,15 @@ class UserResourceIntegrationTest {
       .isEqualTo(UserProfileFixturesCommandTypeCollect.SERIALIZED_USER_PROFILE_COLLECT_RESPONSE);
       }
 
+    }
+
+    @Test
+    void test_update_batch(final ClientSupport client, final UserProfileDao userProfileDao) {
+      when(userProfileDao.get(any(UserId.class))).thenReturn(Optional.of(UserProfileFixturesBatch.USER_PROFILE_MOCK));
+      final var response = client.targetRest("/users/update/batch").request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).post(Entity.entity(UserProfileFixturesBatch.SERIALIZED_USER_PROFILE_BATCH, MediaType.APPLICATION_JSON));
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK_200);
+        assertThatJson(response.readEntity(UserProfile[].class)).whenIgnoringPaths("[0].latestUpdateTime")
+                .isEqualTo(UserProfileFixturesBatch.SERIALIZED_USER_PROFILE_BATCH_RESPONSE);
     }
 
 }

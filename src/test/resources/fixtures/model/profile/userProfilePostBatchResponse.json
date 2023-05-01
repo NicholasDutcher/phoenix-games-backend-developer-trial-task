@@ -1,0 +1,21 @@
+[
+    {
+        "userId": "de4310e5-b139-441a-99db-77c9c4a5fada",
+        "latestUpdateTime": "2021-06-01T09:16:36.123Z",
+        "userProfileProperties": {
+            "inventory": [
+                "sword1",
+                "sword2",
+                "shield1"
+            ],
+            "tools": [
+                "tool1",
+                "tool2"
+            ],
+            "currentGold": 550,
+            "currentGems": 880,
+            "battleFought": 10,
+            "questsNotCompleted": -1
+        }
+    }
+]

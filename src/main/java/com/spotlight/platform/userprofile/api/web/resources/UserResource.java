@@ -1,5 +1,9 @@
 package com.spotlight.platform.userprofile.api.web.resources;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -36,6 +40,16 @@ public class UserResource {
     @POST
     public UserProfile replaceUserProfileProperties(final UserProfileApiModel userProfile) {
         return userProfileService.createOrUpdate(userProfile);
+    }
+
+    @Path("update/batch")
+    @POST
+    public List<UserProfile> replaceUserProfileProperties(final Collection<UserProfileApiModel> userProfiles) {
+        final var results = new HashMap<UserId, UserProfile>();
+        for (final UserProfileApiModel userProfile : userProfiles) {
+            results.put(userProfile.userId(), userProfileService.createOrUpdate(userProfile));
+        }
+        return List.copyOf(results.values());
     }
 
 }
